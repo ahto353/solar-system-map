@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Canvas Solar System</title>
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+  background: black;
+}
+canvas {
+  display: block;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="space"></canvas>
+
+<script>
+const canvas = document.getElementById("space");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;const stars = [];
+
+for (let i = 0; i < 200; i++) {
+  stars.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    size: Math.random() * 2
+  });
+}
+
+/* Päike */
+const sun = {
+  x: canvas.width / 2,
+  y: canvas.height / 2,
+  r: 30
+};
+
+/* Planeedid */
+const planets = [
+  { radius: 60, size: 4, speed: 0.02, angle: 0, color: "gray" },
+  { radius: 100, size: 6, speed: 0.015, angle: 0, color: "orange" },
+  { radius: 150, size: 7, speed: 0.01, angle: 0, color: "blue" },
+  { radius: 200, size: 5, speed: 0.008, angle: 0, color: "red" }
+];
+
+/* animatsioon */
+function draw() {
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  /* Päike */
+  ctx.beginPath();
+  ctx.fillStyle = "yellow";
+  ctx.shadowBlur = 40;
+  ctx.shadowColor = "orange";
+  ctx.arc(sun.x, sun.y, sun.r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  /* planeedid */
+  planets.forEach(p => {
+    p.angle += p.speed;
+
+    const x = sun.x + Math.cos(p.angle) * p.radius;
+    const y = sun.y + Math.sin(p.angle) * p.radius;
+
+    ctx.beginPath();
+    ctx.fillStyle = p.color;
+    ctx.arc(x, y, p.size, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  requestAnimationFrame(draw);
+}
+
+draw();
+
+/* resize fix */
+window.addEventListener("resize", () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+</script>
+
+</body>
+</html>
